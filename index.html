@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urna Eletrônica</title>
+    <link rel="stylesheet" href="style.css" >
+ 
+</head>
+<body>
+    <div class="urna">
+    <div class="tela">
+        <div class="d-1">
+            <div class="d-1-left">
+                <div class="d-1-1">
+                    <span> SEU VOTO PARA</span>
+                </div>
+                <div class="d-1-2">
+                    <span> VEREADOR</span>
+                </div>
+                <div class="d-1-3">
+                    <div class="numero pisca"> </div>   
+                    <div class="numero"> </div>   
+                </div>
+                <div class="d-1-4">
+                    Nome: FULANO DE TAL
+                    Partido: QQQ
+                    Vice-prefeito: BELTRANO  DE TAL
+                </div>
+            </div>
+            <div class="d-1-right">
+                <div class="d-1-image">
+                    <img src="C:\ProjetosReact\Urna\images\fallen.jpg" alt="" >Prefeito
+                </div>
+                <div class="d-1-image small">
+                    <img src="C:\ProjetosReact\Urna\images\coldezera.jpg" alt="" >Vice-Prefeito
+                </div>
+            </div>
+
+        </div>
+        <div class="d-2">
+            Aperte a tela: </br>
+            Confirma para CONFIRMAR este Voto <br>
+            Corrige para REINICIAR este Voto 
+
+        </div>
+    </div>
+    <div class="teclado">
+       <div class="teclado--linha">
+            <div class="teclado--botao" onclick="clicou('1')">1</div>
+            <div class="teclado--botao" onclick="clicou('2')">2</div>
+            <div class="teclado--botao" onclick="clicou('3')">3</div>
+         </div>
+         <div class="teclado--linha">
+            <div class="teclado--botao" onclick="clicou('4')">4</div>
+            <div class="teclado--botao" onclick="clicou('5')">5</div>
+            <div class="teclado--botao" onclick="clicou('6')">6</div>
+         </div>
+         <div class="teclado--linha">
+            <div class="teclado--botao" onclick="clicou('7')">7</div>
+            <div class="teclado--botao" onclick="clicou('8')">8</div>
+            <div class="teclado--botao" onclick="clicou('9')">9</div>
+         </div>
+         <div class="teclado--linha">
+            <div class="teclado--botao" onclick="clicou('0')">0</div>
+         </div>
+         <div class="teclado--linha">
+            <div class="teclado--botao botao--branco" onclick="branco()">Branco</div>
+             <div class="teclado--botao botao--corrige" onclick="corrige()">Corrige</div>
+             <div class="teclado--botao botao--confirma" onclick="confirma()">Confirma</div>
+          </div>
+        </div>
+    
+
+
+
+        <script >
+        
+        let etapas = [
+            {
+                titulo: 'VEREADOR',
+                numeros: 5,
+                candidatos: [
+                    {
+                        numero: '12345',
+                        nome: 'Fallen',
+                        partido: 'CS',
+                        fotos: [
+                            {url:'fallen.jpg', legenda: 'Vereador'}
+                        ]          
+                    },
+                    {
+                        numero: '12398',
+                        nome: 'Coldzera',
+                        partido: 'CS',
+                        fotos: [
+                            {url:'coldezera.jpg', legenda: 'Vereador'  }
+                        ]          
+                    }
+                
+                ]
+            },
+        
+        
+            {
+                titulo: 'PREFEITO',
+                numeros: 2,
+                candidatos: [
+                    {
+                        numero: '12',
+                        nome: 'Fallen',
+                        partido: 'CS',
+                        vice: 'Coldezera',
+                        fotos: [
+                            {url:'fallen.jpg', legenda: 'Prefeito'},
+                            {url:'coldezera.jpg', legenda: 'Vice-Prefeito', small: true}
+                        ]          
+                    },
+                    {
+                        numero: '34',
+                        nome: 'Coldzera',
+                        partido: 'CS',
+                        vice:'Fallen',
+                        fotos: [
+                            {url:'coldezera.jpg', legenda: 'Prefeito'  },
+                            {url:'fallen.jpg', legenda: 'Vice-Prefeito' , small: true }
+                        ]          
+                    }
+                
+                ]
+            }
+        
+        ]
+        
+        </script>
+
+
+        <script>
+            let seuVotoPara = document.querySelector('.d-1-1 span');
+            let cargo = document.querySelector('.d-1-2 span');
+            let descricao = document.querySelector('.d-1-4');
+            let aviso = document.querySelector('.d-2');
+            let lateral = document.querySelector('.d-1-right');
+            let numeros = document.querySelector('.d-1-3');
+            
+            let etapaAtual = 0;
+            let numero = '';
+            let votoBranco = false;
+            let votos = [];
+            
+            function comecarEtapa() {
+
+                let etapa = etapas[etapaAtual];
+                let numeroHtml = '';
+                numero= '';
+                votoBranco = false;
+
+                for(let i=0;i<etapa.numeros;i++){
+                    if(i===0){
+                        numeroHtml += '<div class="numero pisca"></div>';
+                    } else {
+                        numeroHtml += '<div class="numero"></div>';
+                    }
+                }
+
+                seuVotoPara.style.display = 'none';
+                cargo.innerHTML = etapa.titulo;
+                descricao.innerHTML ='';
+                aviso.style.display = 'none';
+                lateral.innerHTML ='';
+                numeros.innerHTML = numeroHtml;
+
+            }
+            
+            
+            function atualizaInterface() {
+                let etapa = etapas[etapaAtual];
+                let candidato = etapa.candidatos.filter((item)=> {
+                    if(item.numero === numero) {
+                        return true;
+
+                    } else {
+                        return false;
+                    }
+                });
+               
+                          
+                if(candidato.length > 0){
+                        candidato = candidato[0];
+                        seuVotoPara.style.display = 'block';
+                        aviso.style.display = 'block';
+                        descricao.innerHTML = `Nome: ${candidato.nome}<br/> Partido: ${candidato.partido}`;
+
+                    let fotosHtml = '';
+                    for(let i in candidato.fotos){
+                        if(candidato.fotos[i].small){
+                            fotosHtml += `<div class="d-1-image small"><img src="images/${candidato.fotos[i].url}" alt="">${candidato.fotos[i].legenda}</div>`;
+                        }
+                        else{
+                            fotosHtml += `<div class="d-1-image"><img src="images/${candidato.fotos[i].url}" alt="">${candidato.fotos[i].legenda}</div>`;
+                        }
+                       
+                    }
+                    lateral.innerHTML = fotosHtml;
+                    } else {
+                        seuVotoPara.style.display = 'block';  
+                        aviso.style.display = 'block';
+                        descricao.innerHTML =  '<div class="aviso--grande pisca ">VOTO NULO</div>'
+                    }
+                    
+             
+
+           }
+
+
+
+            function clicou(n) {
+                let elNumero = document.querySelector('.numero.pisca');
+                if(elNumero !== null) {
+                    elNumero.innerHTML = n;
+                    numero = `${numero}${n}`;
+
+                    elNumero.classList.remove('pisca');
+                    if (elNumero.nextElementSibling !== null){
+                        elNumero.nextElementSibling.classList.add('pisca');
+                    }else {
+                        atualizaInterface();
+                    }
+                }
+            }
+            
+            function branco() {
+               if(numero === ''){
+                    votoBranco = true;
+                    seuVotoPara.style.display = 'block';  
+                    aviso.style.display = 'block';
+                    numeros.innerHTML='';
+                    descricao.innerHTML =  '<div class="aviso--grande pisca ">VOTO EM BRANCO</div>';
+                    lateral.innerHTML = '';
+               }else {
+                   alert('Para votar em branco nao pode ter digitado nenhum numero');
+               }
+            }
+            function corrige() {
+                comecarEtapa();
+            }
+            function confirma() {
+                let etapa = etapas[etapaAtual];
+                let votoConfirmado = false;
+
+
+
+                if(votoBranco === true){
+                    votoConfirmado = true;
+                    votos.push({
+                        etapa: etapas[etapaAtual].titulo,
+                        voto: 'branco'
+                    });
+                } else if(numero.length === etapa.numeros) {
+                    votoConfirmado = true;
+                    votos.push({ 
+                    etapa: etapas[etapaAtual].titulo,
+                        voto: numero
+                });
+            }
+
+                if(votoConfirmado){
+                    etapaAtual++;
+                    if(etapas[etapaAtual] !== undefined){
+                        comecarEtapa();
+                    }else {
+                       document.querySelector('.tela').innerHTML = '<div class="aviso--gigante pisca ">FIM</div>';
+                       console.log(votos);
+                    }
+
+                }
+            }
+            
+            comecarEtapa();
+
+            
+            </script>
+  
+
+    </body>
+</html>
